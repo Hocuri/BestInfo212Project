@@ -1,37 +1,86 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>{{ data['title'] }}</title>
-  </head>
-  <body>
+    <head>
+      <meta charset="utf-8">
+      <title>{{ data['title'] }}</title>
+    </head>
+    <body>
 
-  <h1>
-    Add a new car to the system
-</h1>
-<form method="post">
-  Username: <input name="car"/>
-  <br/><br/>
-  <button type="submit">Name of car</button>
-</form>
+      <h1>
+        Add a new car to the system
+    </h1>
+    <form action="/save_car" method="post" name="Car">
+      Make: <input name="make"/>
+      Model: <input name="model"/>
+      Status: <input name="status"/>
+      Location: <input name="location"/>
+      Registration nr: <input name="reg"/>
+      Year: <input name="year"/>
+      Capacity: <input name="capacity"/>
+      <br/>
+      <button type="submit">Add car</button>
+    </form>
 
-<h1>Information from database</h1>
-    <h1>Username: {{ data['username'] }}</h1></br>
-    <h1>Email: {{ data['email'] }}</h1>
+    <h1>Information from database</h1><br/>
+    <h1>Care Name: {{ data['username'] }}</h1>
+    <h1>Car Model: {{ data['email'] }}</h1>
+    <h1>Car Status: {{ data['email'] }}</h1>
+    <h1>Car Location: {{ data['email'] }}</h1>
 
 
 
-<h1>
-    Write name of car you want to update or delete
-</h1>
-<form method="post">
-  Username: <input name="car"/>
-  <br/><br/>
-  <button type="submit">Name of car</button>
-</form>
+    <h1>
+        Update or delete car
+    </h1>
+    <form method="post">
+      Enter name of car: <input name="car"/>
+      <br/><br/>
+      <button type="submit">Find car</button>
+    </form>
 
-<h1>Information from database</h1>
-    <h1>Username: {{ data['username'] }}</h1></br>
-    <h1>Email: {{ data['email'] }}</h1>
+    <h1>Information from database</h1>
+        <h1>Name: {{ data['username'] }}</h1></br>
+        <h1>Model: {{ data['email'] }}</h1>
+        <h1>Status: {{ data['email'] }}</h1>
+        <h1>Location: {{ data['email'] }}</h1>
+      
+
+
+    <h1>
+      Find customer
+    </h1>
+
+    <form method="post">
+        Name: <input name="car"/>
+        Age: <input age="car"/>
+        Adress: <input adress="car"/>
+        <br/>
+        <button type="submit">Find customer</button>
+    </form>
+
+    <h1>Information from database</h1><br/>
+    <h1>Customer Name: {{ data['username'] }}</h1>
+    <h1>Customer Age: {{ data['email'] }}</h1>
+    <h1>Customer Adress: {{ data['email'] }}</h1>
+    <h1>Car Location: {{ data['email'] }}</h1>
+
+    <h1>
+      Find employee
+    </h1>
+
+    <form method="post">
+        Name: <input name="car"/>
+        Adress: <input adress="car"/>
+        Branch: <input branch="car"/>
+        <br/>
+        <button type="submit">Find employee</button>
+    </form>
+
+    <h1>Information from database</h1><br/>
+    <h1>Employee Name: {{ data['username'] }}</h1>
+    <h1>Employee Adress: {{ data['email'] }}</h1>
+    <h1>Employee Branch: {{ data['email'] }}</h1>
+
   </body>
+
 </html>
