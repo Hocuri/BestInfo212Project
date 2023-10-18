@@ -5,13 +5,29 @@
     <title>{{ data['title'] }}</title>
   </head>
   <body>
-<h1>
-    Enter your user-name to retrieve information from database:
+
+  <h1>
+    Add a new car to the system
 </h1>
 <form method="post">
-  Username: <input name="username"/>
+  Username: <input name="car"/>
   <br/><br/>
-  <button type="submit">Submit</button>
+  <button type="submit">Name of car</button>
+</form>
+
+<h1>Information from database</h1>
+    <h1>Username: {{ data['username'] }}</h1></br>
+    <h1>Email: {{ data['email'] }}</h1>
+
+
+
+<h1>
+    Write name of car you want to update or delete
+</h1>
+<form method="post">
+  Username: <input name="car"/>
+  <br/><br/>
+  <button type="submit">Name of car</button>
 </form>
 
 <h1>Information from database</h1>
