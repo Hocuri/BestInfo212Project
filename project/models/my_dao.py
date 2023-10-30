@@ -101,11 +101,12 @@ class Car:
 #Customer
 
 class Customer:
-    def __init__(self, name, age, adress): #constructer method, calles når du lager en ny instans av car
+    def __init__(self, name, age, adress, customer_id): #constructer method, calles når du lager en ny instans av car
         #self er en referanse til instansen av klassen som blir opprettet
         self.name = name
         self.age = age
         self.adress = adress
+        self.customer_id = customer_id
 
     def get_Name(self):
         return self.name
@@ -124,6 +125,12 @@ class Customer:
     
     def set_Adress(self, value):
         self.adress = value
+
+    def get_Customer_id(self):
+        return self.customer_id
+    
+    def set_Customer_id(self, value):
+        self.customer_id = value
 
 def order_car(customer_id, reg):
     with _get_connection().session() as session:
