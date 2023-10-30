@@ -3,37 +3,30 @@ from flask import render_template, request, redirect, url_for
 from project.models.my_dao import *
 import json
 
+# ===== READ =====
 @app.route('/get_cars', methods=['GET'])
 def query_records():
     return findAllCars()
 
-# The method uses the registration number to find the car
-# object from database
 @app.route('/get_cars_by_reg_number', methods=['POST'])
 def find_car_by_reg_number():
     record = request.form
-    print(record)
-    print(record['reg'])
     return findCarByReg(record['reg'])
 
+# ===== CREATE =====
 @app.route('/save_car', methods=["POST"])
 def save_car_info():
-    print(request.data)
     record = request.form
-    print(record)
     return save_car(record['make'], record['model'], record['reg'], record['year'], record['capacity'])
 
-# The method uses the registration number to find the car
-# object from database and updates other informaiton from
-# the information provided as input in the json object
+# ===== UPDATE =====
 @app.route('/update_car', methods=['PUT'])
 def update_car_info():
     record = request.form
     print(record)
     return update_car(record['make'], record['model'], record['reg'], record['year'], record['capacity'])
 
-# The method uses the registration number to find the car
-# object from database and removes the records
+# ===== DELETE =====
 @app.route('/delete_car', methods=['DELETE'])
 def delete_car_info():
     record = request.form
