@@ -88,3 +88,64 @@ class Car:
     
     def set_Status(self, value):
         self.status = value
+
+
+
+#Customer
+
+class Customer:
+    def __init__(self, name, age, adress): #constructer method, calles når du lager en ny instans av car
+        #self er en referanse til instansen av klassen som blir opprettet
+        self.name = name
+        self.age = age
+        self.adress = adress
+
+    def get_Name(self):
+        return self.name
+
+    def set_Name(self, value):
+        self.name = value
+
+    def get_Age(self):
+        return self.age
+    
+    def set_Age(self, value):
+        self.age = value
+
+    def get_Adress(self):
+        return self.adress
+    
+    def set_Adress(self, value):
+        self.adress = value
+
+
+
+#Employee
+
+class Employee:
+    def __init__(self, name, adress, branch): #constructer method, calles når du lager en ny instans av car
+        #self er en referanse til instansen av klassen som blir opprettet
+        self.name = name
+        self.adress = adress
+        self.branch = branch
+
+    def get_Name(self):
+        return self.name
+
+    def set_Name(self, value):
+        self.name = value
+
+    def get_Adress(self):
+        return self.adress
+    
+    def set_Adress(self, value):
+        self.adress = value
+
+    def get_Branch(self):
+        return self.branch
+    
+    def set_Branch(self, value):
+        self.branch = value
+
+    
+    
