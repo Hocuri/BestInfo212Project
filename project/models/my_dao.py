@@ -88,7 +88,7 @@ class Car:
     
     def set_Status(self, value):
         self.status = value
-
+    # TODO do sth about the status
 
 
 #Customer
@@ -120,15 +120,25 @@ class Customer:
 
 def order_car(customer_id, reg):
     with _get_connection().session() as session:
-        if session.run("MATCH (u:Customer {customer_id: $customer_id})-[:BOOKED]->();", customer_id=customer_id) > 0:
+        if session.run("MATCH (u:Customer {customer_id: $customer_id})-[b:BOOKED]->() RETURN COUNT(b)", customer_id=customer_id) > 0:
             print("This customer has already booked a car")
             return
-        if session.run("MATCH ()-[:BOOKED]->(c:Car {reg: $reg});", reg=reg) > 0:
+        if session.run("MATCH ()-[b:BOOKED]->(c:Car {reg: $reg}) RETURN COUNT(b)", reg=reg) > 0:
             print("This car is already booked")
             return
 
-        cars = session.run("MATCH (a:Car{reg:$reg}), c:Customer{customer_id} CREATE(c)-[:BOOKED]->(c);",
-                reg=reg, make=make, model=model, year=year, capacity=capacity)
+        session.run("MATCH (a:Car{reg:$reg}), c:Customer{customer_id} CREATE(c)-[:BOOKED]->(c);",
+                customer_id=customer_id, reg=reg)
+
+def cancel_order_car(customer_id, reg):
+    with _get_connection().session() as session:
+        if session.run("MATCH (u:Customer {customer_id: $customer_id})-[:BOOKED]->(c:Car {reg: $reg});",
+                        customer_id=customer_id, reg=reg) > 0:
+            session.run("MATCH (a:Car{reg:$reg}), c:Customer{customer_id} CREATE(c)-[:RENTED]->(c);",
+                        customer_id=customer_id, reg=reg)
+
+        else:
+            print("This customer hasn't booked this car")
 
 #Employee
 
