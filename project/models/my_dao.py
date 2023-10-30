@@ -118,7 +118,17 @@ class Customer:
     def set_Adress(self, value):
         self.adress = value
 
+def order_car(customer_id, car_id):
+    with _get_connection().session() as session:
+        if session.run("MATCH (u:Customer {customer_id: $customer_id})-[:BOOKED]->();", customer_id=customer_id) > 0:
+            print("This customer has already booked a car")
+            return
+        if session.run("MATCH ()-[:BOOKED]->(c:Car {reg: $reg});", customer_id=customer_id) > 0:
+            print("This customer has already booked a car")
+            return
 
+        cars = session.run("MATCH (a:Car{reg:$reg}), c:Customer{customer_id} CREATE(c)-[:BOOKED]->(c);",
+                reg=reg, make=make, model=model, year=year, capacity=capacity)
 
 #Employee
 
