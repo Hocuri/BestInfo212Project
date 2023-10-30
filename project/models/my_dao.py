@@ -89,7 +89,6 @@ class Car:
     
     def set_Status(self, value):
         self.status = value
-    # TODO do sth about the status
  
     def get_Reg(self):
         return self.reg
@@ -141,18 +140,31 @@ def order_car(customer_id, reg):
             print("This car is already booked")
             return
 
-        session.run("MATCH (a:Car{reg:$reg}), c:Customer{customer_id} CREATE(c)-[:BOOKED]->(c);",
+        session.run("MATCH (c:Car{reg:$reg}), u:Customer{customer_id} CREATE(u)-[:BOOKED]->(c);",
                 customer_id=customer_id, reg=reg)
+        session.run("MATCH (c:Car{reg:$reg}) set c.status=$status", reg=reg, make=make, status="booked")
+
 
 def cancel_order_car(customer_id, reg):
     with _get_connection().session() as session:
-        if session.run("MATCH (u:Customer {customer_id: $customer_id})-[:BOOKED]->(c:Car {reg: $reg});",
+        if session.run("MATCH (u:Customer {customer_id: $customer_id})-[b:BOOKED]->(c:Car {reg: $reg}); RETURN COUNT(b)",
                         customer_id=customer_id, reg=reg) > 0:
-            session.run("MATCH (a:Car{reg:$reg}), c:Customer{customer_id} CREATE(c)-[:RENTED]->(c);",
+            session.run("MATCH (u:Customer {customer_id: $customer_id})-[b:BOOKED]->(c:Car {reg: $reg}) DELETE b",
                         customer_id=customer_id, reg=reg)
 
         else:
-            print("This customer hasn't booked this car")
+            print("This customer hasn't booked this car, so it can't be cancelled.")
+
+def rent_car(customer_id, reg):
+    with _get_connection().session() as session:
+        if session.run("MATCH (u:Customer {customer_id: $customer_id})-[b:BOOKED]->(c:Car {reg: $reg}); RETURN COUNT(b)",
+                        customer_id=customer_id, reg=reg) > 0:
+            session.run("MATCH (u:Customer {customer_id: $customer_id})-[b:BOOKED]->(c:Car {reg: $reg}) CREATE(u)-[:RENTED]->(c) DELETE b",
+                        customer_id=customer_id, reg=reg)
+
+        else:
+            print("This customer hasn't booked this car, so it can't be rented.")
+
 
 #Employee
 
