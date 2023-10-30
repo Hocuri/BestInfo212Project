@@ -54,12 +54,13 @@ def delete_car(reg):
     _get_connection().execute_query("MATCH (a:Car{reg: $reg}) delete a;", reg = reg)
 
 class Car:
-    def __init__(self, model, year, location, status): #constructer method, calles når du lager en ny instans av car
+    def __init__(self, model, year, location, status, reg): #constructer method, calles når du lager en ny instans av car
         #self er en referanse til instansen av klassen som blir opprettet
         self.model = model
         self.year = year
         self.location = location
         self.status = status
+        self.reg = reg
 
 #get metode, hent ut modellen
 #retrieve the value of the model attribute
@@ -89,6 +90,12 @@ class Car:
     def set_Status(self, value):
         self.status = value
     # TODO do sth about the status
+ 
+    def get_Reg(self):
+        return self.reg
+    
+    def set_Reg(self, value):
+        self.reg = value
 
 
 #Customer
