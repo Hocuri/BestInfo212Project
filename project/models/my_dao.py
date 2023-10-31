@@ -95,6 +95,12 @@ class Car:
 
 
 #Customer
+# Saves car, returns 201 status
+def save_customer(name, age, adress, customer_id):
+    customer = _get_connection().execute_query("MERGE (a:Customer{name: $name, age: $age, adress: $adress, \
+            customer_id: $customer_id}) RETURN a;",
+            name = name, age = age, adress = adress, customer_id = customer_id)
+    return jsonify('Customer created'), 201 
 
 class Customer:
     def __init__(self, name, age, adress, customer_id): #constructer method, calles når du lager en ny instans av car
@@ -130,16 +136,17 @@ class Customer:
 
 def order_car(customer_id, reg):
     with _get_connection().session() as session:
-        if session.run("MATCH (u:Customer {customer_id: $customer_id})-[b:BOOKED]->() RETURN COUNT(b)", customer_id=customer_id) > 0:
+        if session.run("MATCH (u:Customer {customer_id: $customer_id})-[b:BOOKED]->() RETURN COUNT(b)", customer_id=customer_id).single()[0] > 0:
             print("This customer has already booked a car")
             return
-        if session.run("MATCH ()-[b:BOOKED]->(c:Car {reg: $reg}) RETURN COUNT(b)", reg=reg) > 0:
+        if session.run("MATCH ()-[b:BOOKED]->(c:Car {reg: $reg}) RETURN COUNT(b)", reg=reg).single()[0] > 0:
             print("This car is already booked")
             return
 
-        session.run("MATCH (c:Car{reg:$reg}), u:Customer{customer_id} CREATE(u)-[:BOOKED]->(c);",
+        session.run("MATCH (c:Car {reg: $reg}), (u:Customer {customer_id: $customer_id}) CREATE (u)-[:BOOKED]->(c);",
                 customer_id=customer_id, reg=reg)
-        session.run("MATCH (c:Car{reg:$reg}) set c.status=$status", reg=reg, make=make, status="booked")
+        session.run("MATCH (c:Car{reg:$reg}) set c.status=$status", reg=reg, status="booked")
+        return 'ok'
 
 
 def cancel_order_car(customer_id, reg):

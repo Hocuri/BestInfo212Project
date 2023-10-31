@@ -3,6 +3,10 @@ from flask import render_template, request, redirect, url_for
 from project.models.my_dao import *
 import json
 
+# ===========================================================
+# CAR ENDPOINTS
+# ===========================================================
+
 # ===== READ =====
 @app.route('/get_cars', methods=['GET'])
 def query_records():
@@ -33,3 +37,23 @@ def delete_car_info():
     print(record)
     delete_car(record['reg'])
     return findAllCars()
+
+# ===========================================================
+# CUSTOMER ENDPOINTS
+# ===========================================================
+
+# ===== CREATE =====
+@app.route('/save_customer', methods=["POST"])
+def save_customer_info():
+    record = request.form
+    return save_customer(record['name'], record['age'], record['adress'], record['customer_id'])
+
+# ===========================================================
+# ORDER ENDPOINTS
+# ===========================================================
+
+@app.route('/order_car', methods=['PUT'])
+def make_order():
+    record = request.form
+    return order_car(record['customer_id'], record['reg'])
+
