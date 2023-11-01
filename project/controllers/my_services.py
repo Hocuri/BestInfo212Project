@@ -67,3 +67,8 @@ def rent():
     record = request.form
     return rent_car(record['customer_id'], record['reg'])
 
+@app.route('/return_car', methods=['POST'])
+def return_rented_car():
+    record = request.form
+    return return_rented_car(record['customer_id'], record['reg'], record['car_status'])
+

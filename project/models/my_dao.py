@@ -169,6 +169,21 @@ def rent_car(customer_id, reg):
         else:
             print("This customer hasn't booked this car, so it can't be rented.")
 
+def return_car(customer_id, reg, car_status):
+    with _get_connection().session() as session:
+        if session.run("MATCH (u:Customer {customer_id: $customer_id})-[r:RENTED]->(c:Car {reg: $reg}); RETURN COUNT(r)",
+                        customer_id=customer_id, reg=reg) > 0:
+
+            new_status = "available" if car_status == "ok" else "damaged"
+            session.run("MATCH (u:Customer {customer_id: $customer_id})-[r:RENTED]->(c:Car {reg: $reg}) \
+                        set c.status=$status \
+                        DELETE r",
+                        customer_id=customer_id, reg=reg, status=new_status)
+            return jsonify("Ok"), 200
+
+        else:
+            return jsonify("This customer hasn't rented this car, so it can't be returned."), 400
+            
 
 #Employee
 
