@@ -223,6 +223,7 @@ def update_employee(name, adress, branch):
 
 def delete_employee(name):
     _get_connection().execute_query("MATCH (a:Employee{name: $name}) delete a;", name = name)
+    return jsonify("Ok"), 200
 
 def findAllEmployees():
     with _get_connection().session() as session:

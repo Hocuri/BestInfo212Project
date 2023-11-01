@@ -84,7 +84,7 @@ def get_employees():
 @app.route('/get_employees_by_name', methods=["GET"])
 def get_employee():
     record = request.form
-    return findCustomerById(record['name'])
+    return findEmployeesByName(record['name'])
 
 # ===== CREATE =====
 @app.route('/save_employee', methods=["POST"])
