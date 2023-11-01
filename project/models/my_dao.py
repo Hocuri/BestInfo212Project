@@ -240,5 +240,40 @@ class Employee:
     def set_Branch(self, value):
         self.branch = value
 
+
+def save_employee(name, adress, branch):
+    employee = _get_connection().execute_query("MERGE (a:Employee{name: $name, adress: $adress, \
+            branch: $branch}) RETURN a;",
+            name = name, adress = adress, branch = branch)
+    return jsonify('Employee created'), 201
+
+
+def update_employee(name, adress, branch):
+    with _get_connection().session() as session:
+        employees = session.run("MATCH (a:Employee{name:$name}) set a.adress = $adress, a.branch = $branch \
+                RETURN a;",
+                name=name, adress=adress, branch=branch)
+        nodes_json = [node_to_json(record["a"]) for record in employees]
+        return nodes_json
+    
+
+def delete_employee(name):
+    _get_connection().execute_query("MATCH (a:Employee{name: $name}) delete a;", name = name)
+
+def findAllEmployees():
+    with _get_connection().session() as session:
+        employees = session.run("MATCH (a:Employee) RETURN a;")
+        nodes_json = [node_to_json(record["a"]) for record in employees]
+        print(nodes_json)
+        return nodes_json
+
+# Returns employee by name
+def findEmployeesByName(name):
+    with _get_connection().session() as session:
+        employees = session.run("MATCH (a:Employee) where a.name=$name RETURN a;", name=name)
+        nodes_json = [node_to_json(record["a"]) for record in employees]
+        print(nodes_json)
+        return nodes_json
+
     
     
