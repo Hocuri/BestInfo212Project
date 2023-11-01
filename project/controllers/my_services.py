@@ -70,20 +70,6 @@ def delete_customer_info():
     record = request.form
     return delete_customer(record['customer_id'])
 
-# ===== UPDATE =====
-@app.route('/update_customer', methods=['PUT'])
-def update_customer_info():
-    record = request.form
-    print(record)
-    return update_customer(record['name'], record['age'], record['adress'], record['customer_id'])
-
-# ===== DELETE =====
-@app.route('/delete_customer', methods=['DELETE'])
-def delete_customer_info():
-    record = request.form
-    print(record)
-    return delete_customer(record['customer_id'])
-
 
 # ===========================================================
 # EMPLOYEE ENDPOINTS
