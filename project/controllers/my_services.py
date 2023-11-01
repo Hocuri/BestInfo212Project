@@ -42,11 +42,24 @@ def delete_car_info():
 # CUSTOMER ENDPOINTS
 # ===========================================================
 
+# ===== READ =====
+@app.route('/get_customers', methods=["GET"])
+def get_customers():
+    record = request.form
+    return findAllCustomers()
+
+@app.route('/get_customers_by_id', methods=["GET"])
+def get_customer():
+    record = request.form
+    return findCustomerById(record['customer_id'])
+
 # ===== CREATE =====
 @app.route('/save_customer', methods=["POST"])
 def save_customer_info():
     record = request.form
     return save_customer(record['name'], record['age'], record['adress'], record['customer_id'])
+
+
 
 # ===========================================================
 # ORDER ENDPOINTS
