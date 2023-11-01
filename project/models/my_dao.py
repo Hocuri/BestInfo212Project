@@ -49,49 +49,7 @@ def update_car(make, model, reg, year, capacity):
 # Deletes car
 def delete_car(reg):
     _get_connection().execute_query("MATCH (a:Car{reg: $reg}) delete a;", reg = reg)
-
-class Car:
-    def __init__(self, model, year, location, status, reg): #constructer method, calles når du lager en ny instans av car
-        #self er en referanse til instansen av klassen som blir opprettet
-        self.model = model
-        self.year = year
-        self.location = location
-        self.status = status
-        self.reg = reg
-
-#get metode, hent ut modellen
-#retrieve the value of the model attribute
-    def get_Model(self):
-        return self.model
-
-#set metode, sett modellen
-#allows you to set or update the model attribute 
-    def set_Model(self, value):
-        self.model = value
-
-    def get_Year(self):
-        return self.year
-    
-    def set_Year(self, value):
-        self.year = value
-
-    def get_Location(self):
-        return self.location
-    
-    def set_Location(self, value):
-        self.location = value
-
-    def get_Status(self):
-        return self.status
-    
-    def set_Status(self, value):
-        self.status = value
- 
-    def get_Reg(self):
-        return self.reg
-    
-    def set_Reg(self, value):
-        self.reg = value
+    return jsonify('Car deleted'), 200
 
 
 #Customer
@@ -114,6 +72,7 @@ def update_customer(name, age, adress, customer_id):
 
 def delete_customer(customer_id):
     _get_connection().execute_query("MATCH (a:Customer{customer_id: $customer_id}) delete a;", customer_id = customer_id)
+    return jsonify("Customer deleted"), 200
 
 def findAllCustomers():
     with _get_connection().session() as session:
@@ -165,24 +124,24 @@ class Customer:
 def order_car(customer_id, reg):
     with _get_connection().session() as session:
         if session.run("MATCH (u:Customer {customer_id: $customer_id})-[b:BOOKED]->() RETURN COUNT(b)", customer_id=customer_id).single()[0] > 0:
-            print("This customer has already booked a car")
-            return
+            return jsonify("This customer has already booked a car"), 400
         if session.run("MATCH ()-[b:BOOKED]->(c:Car {reg: $reg}) RETURN COUNT(b)", reg=reg).single()[0] > 0:
-            print("This car is already booked")
-            return
+            return jsonify("This car is already booked"), 400
 
         session.run("MATCH (c:Car {reg: $reg}), (u:Customer {customer_id: $customer_id}) CREATE (u)-[:BOOKED]->(c);",
                 customer_id=customer_id, reg=reg)
         session.run("MATCH (c:Car{reg:$reg}) set c.status=$status", reg=reg, status="booked")
-        return 'ok'
+        return jsonify('ok'), 200
 
 
 def cancel_order_car(customer_id, reg):
     with _get_connection().session() as session:
         if session.run("MATCH (u:Customer {customer_id: $customer_id})-[b:BOOKED]->(c:Car {reg: $reg}) RETURN COUNT(b)",
                         customer_id=customer_id, reg=reg).single()[0] > 0:
-            session.run("MATCH (u:Customer {customer_id: $customer_id})-[b:BOOKED]->(c:Car {reg: $reg}) DELETE b",
-                        customer_id=customer_id, reg=reg)
+            session.run("MATCH (u:Customer {customer_id: $customer_id})-[b:BOOKED]->(c:Car {reg: $reg})\
+                        set c.status=$status\
+                        DELETE b",
+                        customer_id=customer_id, reg=reg, status="available")
             return jsonify('Order cancelled'), 200
         else:
             return jsonify("This customer hasn't booked this car, so it can't be cancelled."), 400
@@ -191,9 +150,13 @@ def rent_car(customer_id, reg):
     with _get_connection().session() as session:
         if session.run("MATCH (u:Customer {customer_id: $customer_id})-[b:BOOKED]->(c:Car {reg: $reg}) RETURN COUNT(b)",
                         customer_id=customer_id, reg=reg).single()[0] > 0:
-            session.run("MATCH (u:Customer {customer_id: $customer_id})-[b:BOOKED]->(c:Car {reg: $reg}) CREATE(u)-[:RENTED]->(c) DELETE b",
-                        customer_id=customer_id, reg=reg)
-            return jsonify('Car rented'), 200
+            session.run("MATCH (u:Customer {customer_id: $customer_id})-[b:BOOKED]->(c:Car {reg: $reg})\
+                        set c.status=$status\
+                        CREATE(u)-[:RENTED]->(c)\
+                        DELETE b",
+                        customer_id=customer_id, reg=reg, status="rented")
+            return jsonify("Ok"), 200
+
         else:
             return jsonify("This customer hasn't booked this car, so it can't be rented."), 400
 
