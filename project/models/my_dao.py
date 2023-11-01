@@ -63,9 +63,10 @@ def save_customer(name, age, adress, customer_id):
 
 def update_customer(name, age, adress, customer_id):
     with _get_connection().session() as session:
-        customers = session.run("MATCH (a:Customer{customer_id:$customer_id}) set a.name=$name, a.age=$age, a.adress = $adress, \
+        customers = session.run("MATCH (a:Customer{customer_id:$customer_id}) set a.name=$name, a.age=$age, a.adress = $adress \
                 RETURN a;",
                 name=name, age=age, adress=adress, customer_id=customer_id)
+        
         nodes_json = [node_to_json(record["a"]) for record in customers]
         return nodes_json
     
