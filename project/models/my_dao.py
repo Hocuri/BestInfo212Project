@@ -90,38 +90,6 @@ def findCustomerById(customer_id):
         print(nodes_json)
         return nodes_json
 
-class Customer:
-    def __init__(self, name, age, adress, customer_id): #constructer method, calles når du lager en ny instans av car
-        #self er en referanse til instansen av klassen som blir opprettet
-        self.name = name
-        self.age = age
-        self.adress = adress
-        self.customer_id = customer_id
-
-    def get_Name(self):
-        return self.name
-
-    def set_Name(self, value):
-        self.name = value
-
-    def get_Age(self):
-        return self.age
-    
-    def set_Age(self, value):
-        self.age = value
-
-    def get_Adress(self):
-        return self.adress
-    
-    def set_Adress(self, value):
-        self.adress = value
-
-    def get_Customer_id(self):
-        return self.customer_id
-    
-    def set_Customer_id(self, value):
-        self.customer_id = value
-
 def order_car(customer_id, reg):
     with _get_connection().session() as session:
         if session.run("MATCH (u:Customer {customer_id: $customer_id})-[b:BOOKED]->() RETURN COUNT(b)", customer_id=customer_id).single()[0] > 0:
@@ -178,32 +146,6 @@ def return_car(customer_id, reg, car_status):
             
 
 #Employee
-
-class Employee:
-    def __init__(self, name, adress, branch): #constructer method, calles når du lager en ny instans av car
-        #self er en referanse til instansen av klassen som blir opprettet
-        self.name = name
-        self.adress = adress
-        self.branch = branch
-
-    def get_Name(self):
-        return self.name
-
-    def set_Name(self, value):
-        self.name = value
-
-    def get_Adress(self):
-        return self.adress
-    
-    def set_Adress(self, value):
-        self.adress = value
-
-    def get_Branch(self):
-        return self.branch
-    
-    def set_Branch(self, value):
-        self.branch = value
-
 
 def save_employee(name, adress, branch):
     employee = _get_connection().execute_query("MERGE (a:Employee{name: $name, adress: $adress, \
