@@ -189,18 +189,18 @@ def cancel_order_car(customer_id, reg):
 
 def rent_car(customer_id, reg):
     with _get_connection().session() as session:
-        if session.run("MATCH (u:Customer {customer_id: $customer_id})-[b:BOOKED]->(c:Car {reg: $reg}); RETURN COUNT(b)",
-                        customer_id=customer_id, reg=reg) > 0:
+        if session.run("MATCH (u:Customer {customer_id: $customer_id})-[b:BOOKED]->(c:Car {reg: $reg}) RETURN COUNT(b)",
+                        customer_id=customer_id, reg=reg).single()[0] > 0:
             session.run("MATCH (u:Customer {customer_id: $customer_id})-[b:BOOKED]->(c:Car {reg: $reg}) CREATE(u)-[:RENTED]->(c) DELETE b",
                         customer_id=customer_id, reg=reg)
-
+            return jsonify('Car rented'), 200
         else:
-            print("This customer hasn't booked this car, so it can't be rented.")
+            return jsonify("This customer hasn't booked this car, so it can't be rented."), 400
 
 def return_car(customer_id, reg, car_status):
     with _get_connection().session() as session:
-        if session.run("MATCH (u:Customer {customer_id: $customer_id})-[r:RENTED]->(c:Car {reg: $reg}); RETURN COUNT(r)",
-                        customer_id=customer_id, reg=reg) > 0:
+        if session.run("MATCH (u:Customer {customer_id: $customer_id})-[r:RENTED]->(c:Car {reg: $reg}) RETURN COUNT(r)",
+                        customer_id=customer_id, reg=reg).single()[0] > 0:
 
             new_status = "available" if car_status == "ok" else "damaged"
             session.run("MATCH (u:Customer {customer_id: $customer_id})-[r:RENTED]->(c:Car {reg: $reg}) \
