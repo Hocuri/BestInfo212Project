@@ -45,7 +45,6 @@ def delete_car_info():
 # ===== READ =====
 @app.route('/get_customers', methods=["GET"])
 def get_customers():
-    record = request.form
     return findAllCustomers()
 
 @app.route('/get_customers_by_id', methods=["GET"])
@@ -59,6 +58,17 @@ def save_customer_info():
     record = request.form
     return save_customer(record['name'], record['age'], record['adress'], record['customer_id'])
 
+# ===== UPDATE =====
+@app.route('/save_customer', methods=["PUT"])
+def update_customer_info():
+    record = request.form
+    return update_customer(record['name'], record['age'], record['adress'], record['customer_id'])
+
+# ===== DELETE =====
+@app.route('/save_customer', methods=["DELETE"])
+def delete_customer_info():
+    record = request.form
+    return delete_customer(record['customer_id'])
 
 
 # ===========================================================
