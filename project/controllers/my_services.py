@@ -57,3 +57,13 @@ def make_order():
     record = request.form
     return order_car(record['customer_id'], record['reg'])
 
+@app.route('/cancel_order_car', methods=['POST'])
+def make_order():
+    record = request.form
+    return cancel_order_car(record['customer_id'], record['reg'])
+
+@app.route('/rent_car', methods=['POST'])
+def make_order():
+    record = request.form
+    return rent_car(record['customer_id'], record['reg'])
+
