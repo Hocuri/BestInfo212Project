@@ -95,12 +95,40 @@ class Car:
 
 
 #Customer
-# Saves car, returns 201 status
+# Saves customer, returns 201 status
 def save_customer(name, age, adress, customer_id):
     customer = _get_connection().execute_query("MERGE (a:Customer{name: $name, age: $age, adress: $adress, \
             customer_id: $customer_id}) RETURN a;",
             name = name, age = age, adress = adress, customer_id = customer_id)
-    return jsonify('Customer created'), 201 
+    return jsonify('Customer created'), 201
+
+
+def update_customer(name, age, adress, customer_id):
+    with _get_connection().session() as session:
+        customers = session.run("MATCH (a:Customer{customer_id:$customer_id}) set a.name=$name, a.age=$age, a.adress = $adress, \
+                RETURN a;",
+                name=name, age=age, adress=adress, customer_id=customer_id)
+        nodes_json = [node_to_json(record["a"]) for record in customers]
+        return nodes_json
+    
+
+def delete_customer(customer_id):
+    _get_connection().execute_query("MATCH (a:Customer{customer_id: $customer_id}) delete a;", customer_id = customer_id)
+
+def findAllCustomers():
+    with _get_connection().session() as session:
+        customers = session.run("MATCH (a:Customer) RETURN a;")
+        nodes_json = [node_to_json(record["a"]) for record in customers]
+        print(nodes_json)
+        return nodes_json
+
+# Returns car by reg
+def findCustomerById(customer_id):
+    with _get_connection().session() as session:
+        customers = session.run("MATCH (a:Customer) where a.customer_id=$customer_id RETURN a;", customer_id=customer_id)
+        nodes_json = [node_to_json(record["a"]) for record in customers]
+        print(nodes_json)
+        return nodes_json
 
 class Customer:
     def __init__(self, name, age, adress, customer_id): #constructer method, calles når du lager en ny instans av car
